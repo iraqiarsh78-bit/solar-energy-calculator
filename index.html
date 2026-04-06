@@ -1,56 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Solar Energy Calculator</title>
+    <title>Smart Solar Energy Calculator</title>
+
     <style>
         body {
-            font-family: Arial;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
             text-align: center;
-            background: #f4f4f4;
+            margin: 0;
         }
-        .box {
+
+        .container {
+            margin-top: 80px;
             background: white;
-            padding: 20px;
-            margin: 50px auto;
-            width: 300px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px gray;
+            color: black;
+            padding: 30px;
+            width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        input, button {
-            padding: 10px;
+
+        h1 {
+            margin-top: 40px;
+        }
+
+        input, select {
+            padding: 12px;
             margin: 10px;
-            width: 80%;
+            width: 85%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 12px;
+            width: 90%;
+            background: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e3c72;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
         }
     </style>
 </head>
+
 <body>
 
-    <div class="box">
-        <h2>Solar Energy Calculator</h2>
+    <h1>☀ Smart Solar Energy Calculator</h1>
 
-        <input type="number" id="units" placeholder="Daily units (kWh)">
+    <div class="container">
+
+        <input type="number" id="units" placeholder="Daily energy (kWh)">
         <input type="number" id="sunlight" placeholder="Sunlight hours">
+
+        <select id="panelType">
+            <option value="0.3">300W Panel</option>
+            <option value="0.4">400W Panel</option>
+            <option value="0.55">550W Panel</option>
+        </select>
 
         <button onclick="calculate()">Calculate</button>
 
-        <h3 id="result"></h3>
+        <div class="result" id="result"></div>
+
     </div>
 
     <script>
         function calculate() {
+
             let units = document.getElementById("units").value;
             let sunlight = document.getElementById("sunlight").value;
+            let panelPower = document.getElementById("panelType").value;
 
             if(units === "" || sunlight === "") {
-                document.getElementById("result").innerText = "Enter all values";
+                document.getElementById("result").innerHTML = "⚠ Enter all values";
                 return;
             }
 
-            let panelOutput = 0.3; 
-            let panels = units / (panelOutput * sunlight);
+            let panels = units / (panelPower * sunlight);
 
-            document.getElementById("result").innerText =
-                "Panels Required: " + Math.ceil(panels);
+            let areaPerPanel = 2; // m² approx
+            let totalArea = panels * areaPerPanel;
+
+            let cost = panels * 15000;
+
+            document.getElementById("result").innerHTML =
+                "🔢 Panels Required: <b>" + Math.ceil(panels) + "</b><br><br>" +
+                "📏 Total Area Needed: <b>" + Math.ceil(totalArea) + " m²</b><br><br>" +
+                "💰 Estimated Cost: <b>₹" + Math.ceil(cost) + "</b>";
         }
     </script>
 

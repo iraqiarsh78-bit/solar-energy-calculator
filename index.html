@@ -12,20 +12,24 @@
             margin: 0;
         }
 
+        h1 {
+            margin-top: 40px;
+        }
+
+        p {
+            opacity: 0.9;
+        }
+
         .container {
-            margin-top: 80px;
+            margin-top: 30px;
             background: white;
             color: black;
             padding: 30px;
-            width: 350px;
+            width: 360px;
             margin-left: auto;
             margin-right: auto;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            margin-top: 40px;
         }
 
         input, select {
@@ -53,7 +57,13 @@
 
         .result {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -61,6 +71,7 @@
 <body>
 
     <h1>☀ Smart Solar Energy Calculator</h1>
+    <p>Plan your solar setup using real-world parameters</p>
 
     <div class="container">
 
@@ -70,8 +81,13 @@
         <select id="panelType">
             <option value="0.3">300W Panel</option>
             <option value="0.4">400W Panel</option>
-            <option value="0.55">550W Panel</option>
+            <option value="0.55" selected>550W Panel</option>
         </select>
+
+        <label>
+            <input type="checkbox" id="batteryToggle" checked>
+            Include Battery Storage
+        </label>
 
         <button onclick="calculate()">Calculate</button>
 
@@ -85,6 +101,7 @@
             let units = document.getElementById("units").value;
             let sunlight = document.getElementById("sunlight").value;
             let panelPower = document.getElementById("panelType").value;
+            let batteryIncluded = document.getElementById("batteryToggle").checked;
 
             if(units === "" || sunlight === "") {
                 document.getElementById("result").innerHTML = "⚠ Enter all values";
@@ -92,19 +109,33 @@
             }
 
             let panels = units / (panelPower * sunlight);
+            panels = Math.ceil(panels);
 
-            let areaPerPanel = 2; // m² approx
+            let areaPerPanel = 2;
             let totalArea = panels * areaPerPanel;
 
-            let cost = panels * 15000;
+            let panelCostPerUnit = 20000;
+            let panelCost = panels * panelCostPerUnit;
+
+            let inverterCost = 30000;
+            let installationCost = panelCost * 0.15;
+
+            let batteryCost = batteryIncluded ? panels * 3000 : 0;
+
+            let totalCost = panelCost + inverterCost + installationCost + batteryCost;
+
+            let electricityRate = 8;
+            let yearlySavings = units * 365 * electricityRate;
+            let paybackYears = totalCost / yearlySavings;
 
             document.getElementById("result").innerHTML =
-                "🔢 Panels Required: <b>" + Math.ceil(panels) + "</b><br><br>" +
-                "📏 Total Area Needed: <b>" + Math.ceil(totalArea) + " m²</b><br><br>" +
-                "💰 Estimated Cost: <b>₹" + Math.ceil(cost) + "</b>";
+                "🔢 Panels Required: <b>" + panels + "</b><br><br>" +
+                "📏 Area Required: <b>" + totalArea + " m²</b><br><br>" +
+                "💰 Panel Cost: ₹" + panelCost + "<br>" +
+                "⚡ Inverter Cost: ₹" + inverterCost + "<br>" +
+                "🔧 Installation: ₹" + Math.ceil(installationCost) + "<br>" +
+                "🔋 Battery: ₹" + batteryCost + "<br><br>" +
+                "💸 <b>Total Cost: ₹" + Math.ceil(totalCost) + "</b><br><br>" +
+                "📉 Payback Period: <b>" + paybackYears.toFixed(1) + " years</b>";
         }
-    </script>
-
-</body>
-</html>
-<!-- force update -->
+    </
